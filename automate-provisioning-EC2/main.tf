@@ -119,3 +119,5 @@ resource "aws_instance" "myapp-server"{
     instance_type = var.instance_type
 }
 
+
+
