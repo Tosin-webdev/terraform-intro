@@ -123,6 +123,10 @@ resource "aws_instance" "myapp-server"{
     availability_zone = var.avail_zone
 
     associate_public_ip_address = true
+    key_name = "server-key-pair"
+    tags = {
+        Name: "${var.env_prefix}-server"
+    } 
 }
 
 
