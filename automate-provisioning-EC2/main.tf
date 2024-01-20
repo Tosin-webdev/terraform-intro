@@ -12,6 +12,8 @@ variable avail_zone {}
 
 variable my_ip {}
 
+variable instance_type {}
+
 resource "aws_vpc" "myapp-vpc" {
     cidr_block = var.vpc_cidr_block
     # give name to resources
@@ -94,3 +96,26 @@ resource "aws_default_security_group" "default-sg"{
         Name: "${var.env_prefix}-default-sg"
     } 
 }
+
+data "aws_ami" "latest-amazon-linux-image"{
+    most_recent = true 
+    owners = ["amazon"]
+    filter {
+        name = "name"
+        values = ["amzn2-ami-hvm*"]
+    }
+    # filter {
+    #     name = "virtualization"
+    #     values = ["hvm"]
+    # }
+}
+# Amazon Linux 2 Kernel 5.10 AMI 2.0.20240109.0 x86_64 HVM gp2
+output "aws_ami_id" {
+    value = data.aws_ami.latest-amazon-linux-image.id
+}
+
+resource "aws_instance" "myapp-server"{
+    ami = data.aws_ami.latest-amazon-linux-image.id
+    instance_type = var.instance_type
+}
+
