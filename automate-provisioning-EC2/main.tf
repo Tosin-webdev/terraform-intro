@@ -14,6 +14,7 @@ variable my_ip {}
 
 variable instance_type {}
 
+variable public_key_location {}
 resource "aws_vpc" "myapp-vpc" {
     cidr_block = var.vpc_cidr_block
     # give name to resources
@@ -114,6 +115,13 @@ output "aws_ami_id" {
     value = data.aws_ami.latest-amazon-linux-image.id
 }
 
+resource "aws_key_pair" "ssh-key"{
+    key_name = "server-key"
+    # public_key = var.my_public_ip 
+    public_key = "${file(var.public_key_location)}"  
+}
+
+
 resource "aws_instance" "myapp-server"{
     ami = data.aws_ami.latest-amazon-linux-image.id
     instance_type = var.instance_type
@@ -123,7 +131,8 @@ resource "aws_instance" "myapp-server"{
     availability_zone = var.avail_zone
 
     associate_public_ip_address = true
-    key_name = "server-key-pair"
+    # key_name = "server-key-pair"
+    key_name = aws_key_pair.ssh-key.key_name
     tags = {
         Name: "${var.env_prefix}-server"
     } 
