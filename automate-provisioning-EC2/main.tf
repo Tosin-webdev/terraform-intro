@@ -15,6 +15,7 @@ variable my_ip {}
 variable instance_type {}
 
 variable public_key_location {}
+
 resource "aws_vpc" "myapp-vpc" {
     cidr_block = var.vpc_cidr_block
     # give name to resources
@@ -128,7 +129,6 @@ resource "aws_key_pair" "ssh-key"{
 }
 
 
-
 resource "aws_instance" "myapp-server"{
     ami = data.aws_ami.latest-amazon-linux-image.id
     instance_type = var.instance_type
@@ -140,11 +140,17 @@ resource "aws_instance" "myapp-server"{
     associate_public_ip_address = true
     # key_name = "server-key-pair"
     key_name = aws_key_pair.ssh-key.key_name
+    user_data = file("entry-script.sh")
+
     tags = {
         Name: "${var.env_prefix}-server"
     } 
 }
 
 
-
-
+# sudo yum update -y
+# sudo amazon-linux-extras install docker
+# sudo systemctl start docker
+# sudo usermod -aG docker ec2-user
+# docker run -p 8080:80 nginx
+                    
