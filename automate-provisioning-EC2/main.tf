@@ -97,6 +97,7 @@ data "aws_ami" "latest-amazon-linux-image"{
     #     values = ["hvm"]
     # }
 }
+
 # Amazon Linux 2 Kernel 5.10 AMI 2.0.20240109.0 x86_64 HVM gp2
 output "aws_ami_id" {
     value = data.aws_ami.latest-amazon-linux-image.id
